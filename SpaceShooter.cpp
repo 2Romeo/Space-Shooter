@@ -3,24 +3,43 @@
 
 
 
+void SpaceShooter::DeseneazaFrame()// deseneaza ceilalti actori, backround etc.
+{
+	this->getFereastra()->clear();//curata frame-ul anterior
+	for (auto* bullet : this->gloante)
+	{
+		bullet->deseneazaProiectil(this->fereastra);
+	}
+	for (auto* inamic: this->inamici)
+	{
+		inamic->DeseneazaInamici(this->fereastra);
+	}
+	this->jucator->deseneazaJucator(*fereastra);
+	this->fereastra->display();//afiseaza
+}
+
 SpaceShooter::SpaceShooter()
 {
 	this->InitTexturi();
 	this->initActori();
 	this->InitFereastra();
-	
+	this->initInamic();
 };
 
 SpaceShooter::~SpaceShooter()
 {
-	for (auto &i : this->texturi)
+	for (auto i : this->texturi)
 		delete i.second;//stergem elementul sf:wad*
+
+	for (auto *i : this->gloante)
+		delete i;
+	
+	for (auto *i : this->inamici)
+		delete i;
 
 	delete[] this->fereastra;
 	delete this->jucator;
 
-	for (auto i : this->gloante)
-		delete i;
 };
 
 
@@ -33,23 +52,37 @@ void SpaceShooter::InitTexturi()
 void SpaceShooter::initActori()
 {
 	jucator = new Jucator();
-	inamic
+}
+
+void SpaceShooter::initInamic()
+{
+	MaxSpawnTimer = 50.f;
+	SpawnTimer = MaxSpawnTimer;
+}
+
+void SpaceShooter::updateInamici()
+{
+	this->SpawnTimer += 1.f;
+	if (this->SpawnTimer >= MaxSpawnTimer)//daca timpul maxim de asteptare a fost atins
+	{
+		inamici.push_back(new Inamici(rand()%fereastra->getSize().x, -100.f));//face, ramd()%500 pentru ca rand() e un nr foarte mare si avem nevoie de unul mai mic
+		SpawnTimer = 0.f;//cronometrul de spawnare ajunge la 0 adica spawnam alt inamic
+	}
+	for (int i=0;i<inamici.size();i++)
+	{
+		inamici[i]->UpdateInamici();
+		//remove enemy at the bottom of the screen
+		if (this->inamici[i]->getMargini().top > fereastra->getSize().y)//daca latura de sus a inamicului este mai mare adica ma jos de fereastra noastra, comparat pe axa orizontala y
+		{
+			inamici.erase(inamici.begin() + i);//stergem inamicul care iese din "sonar"
+			std::cout << inamici.size();
+		}
+	}
 }
 
 sf::RenderWindow* SpaceShooter::getFereastra()
 {
 	return this->fereastra;
-}
-
-void SpaceShooter::DeseneazaFrame()// deseneaza actori backround etc.
-{
-	this->getFereastra()->clear();//curata frame-ul anterior
-	for (auto* bullet : this->gloante)
-	{
-		bullet->deseneazaProiectil(this->fereastra);
-	}
-	this->jucator->deseneazaJucator(*fereastra);
-	this->fereastra->display();//afiseaza
 }
 
 void SpaceShooter::ruleaza()
@@ -63,7 +96,7 @@ void SpaceShooter::ruleaza()
 
 void SpaceShooter::ProiectilUpdate()
 {
-	unsigned counter = 0;//cate proiectile sunt eliberate la activ apoi eliminate adica cate proiectile sunt trase si sunt "in aer"
+	unsigned counter = 0;//cate proiectile sunt eliberate la activ si apoi eliminate adica cate proiectile sunt trase si sunt "in aer"
 	//cate proiectile eliminam
 	for (auto* i : gloante)
 	{	
@@ -94,13 +127,16 @@ void SpaceShooter::InputUpdate()
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)&&jucator->PoateTrage())
 	{
-	   gloante.push_back(new Proiectil(texturi["Bullet"], jucator->GetPozJucator().x, jucator->GetPozJucator().y, 0.f, -1.f, 5.f));
+	   gloante.push_back(new Proiectil(texturi["Bullet"],
+		   jucator->GetPozJucator().x + jucator->getMargini().width/7100,//adaugam la pozitia pe orizontala unde se spawneaza proiectilul si marimea texturii/2 ca sa se spawneze fix in centrul sprite-ului
+		   jucator->GetPozJucator().y
+		   , 0.f, -1.f, 5.f));
 
 	}
 }
 void SpaceShooter::InitFereastra()
 {
-	fereastra = new sf::RenderWindow(sf::VideoMode(800, 600), "Baboon dog", sf::Style::Close | sf::Style::Titlebar);
+	fereastra = new sf::RenderWindow(sf::VideoMode(800, 600), "Space Shooter", sf::Style::Close | sf::Style::Titlebar);
 	//																					^          ^         ^
 	//							        												|          |         |
 	//							  ce butoane apar la fereastra noastra de joc: buton de inchidere si buton de titlu jocului
@@ -125,4 +161,5 @@ void SpaceShooter::UpdateGeneral()
 	InputUpdate();
 	jucator->updateJucator();
 	ProiectilUpdate();
+	updateInamici();
 }

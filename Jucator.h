@@ -11,8 +11,9 @@ class Jucator
 	void initTextura();
 	float ClickCooldown;
 	float ClickCooldownMax;
-	const sf::FloatRect getMargini() const;
+
 public:
+	const sf::FloatRect& getMargini();
 	sf::Vector2f GetPozJucator() const;
 	float getviteza();
 	bool PoateTrage();

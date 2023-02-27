@@ -25,14 +25,20 @@ public:
 	void EventsUpdate();//updatam stiva de event-uri
 	void InputUpdate();
 	void ProiectilUpdate();
+
+	//inamici
+	void initInamic();
+	void updateInamici();
+	float SpawnTimer;
+	float MaxSpawnTimer;
 	sf::RenderWindow* getFereastra();
 
 private:
 	
 	sf::RenderWindow *fereastra;//fereastra in care apare aplicatia
 	Jucator* jucator;
-
-	Inamici* inamic;
+	
+	std::vector<Inamici*> inamici;
 
 	// resurse
 	std::map<std::string, sf::Texture*> texturi;

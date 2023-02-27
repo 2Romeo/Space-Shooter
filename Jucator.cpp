@@ -63,7 +63,10 @@ void Jucator::updateJucator()
 {
 	UpdateCooldown();
 }
-
+const sf::FloatRect& Jucator::getMargini()
+{
+	return obiect.getGlobalBounds();
+}
 void Jucator::deseneazaJucator(sf::RenderTarget& x)
 {
 	x.draw(this->obiect);
