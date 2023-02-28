@@ -9,10 +9,10 @@
 
 class SpaceShooter
 {	
-
 public:
 	SpaceShooter();
 	~SpaceShooter();
+
 	
 	void ruleaza();
 	void DeseneazaFrame();// desenam texturile frame-ului
@@ -29,12 +29,37 @@ public:
 	//inamici
 	void initInamic();
 	void updateInamici();
-	float SpawnTimer;
-	float MaxSpawnTimer;
+	void updateCombat();//daca un glont intra in coliziune cu un asteroid se despawbeaza ambii
+
 	sf::RenderWindow* getFereastra();
 
-private:
+	//gui
+	void initGUI();
+	void GUIupdate();
+	void deseneazaGUI();
+	void updateColision();
+	void initSistem();
+
+	//background joc
+	void initSpatiu();
+	void updateSpatiu();
+	void deseneazaSpatiu();
 	
+	//PlayerGUI
+	private:
+		float SpawnTimer;
+		float MaxSpawnTimer;
+
+	sf::RectangleShape baraHp;
+	sf::RectangleShape baraHpBackground;
+	sf::Text GameOverText;
+	// gui + Sistem
+	sf::Font GUIfont;
+	sf::Text GUItext;
+	unsigned int Puncte;
+	sf::Sprite SpatiuBackground;
+	sf::Texture TexturaBackground;
+
 	sf::RenderWindow *fereastra;//fereastra in care apare aplicatia
 	Jucator* jucator;
 	
@@ -42,6 +67,6 @@ private:
 
 	// resurse
 	std::map<std::string, sf::Texture*> texturi;
-	std::vector<Proiectil*> gloante;//sa tinem cont cate gloante sunt in joc
+	std::vector<Proiectil*> gloante;//sa tinem cont cate gloante sunt prezente in fereastra
 };
 

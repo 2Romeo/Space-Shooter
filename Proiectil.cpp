@@ -11,17 +11,14 @@ Proiectil::Proiectil(sf::Texture* txtura, float pozX, float pozY, float _X, floa
 	this->viteza = viteza;
 }
 
-Proiectil::~Proiectil()
-{
-//	delete textura;
-}
+
 
 void Proiectil::deseneazaProiectil(sf::RenderTarget* fereastra)
 {
 	fereastra->draw(this->obiect);
 	
 }
-const sf::FloatRect Proiectil::MarginiReale()
+const sf::FloatRect Proiectil::getMargini()
 {
 	return obiect.getGlobalBounds();
 }

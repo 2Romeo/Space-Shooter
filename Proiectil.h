@@ -16,7 +16,7 @@ public:
 	void updateProiectil();
 	void deseneazaProiectil(sf::RenderTarget*);
 	void initProiectil();
-	const sf::FloatRect MarginiReale();//desenam marginile proiectilului
+	const sf::FloatRect getMargini();//desenam marginile proiectilului
 
 };
 
