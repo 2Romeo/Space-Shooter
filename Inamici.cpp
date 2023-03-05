@@ -11,17 +11,16 @@ const int& Inamici::getValoare()
 	return this->valoare;
 }
 
-sf::FloatRect Inamici::getMargini()// nu folosim & deoarece marginile sunt temporare
+sf::FloatRect Inamici::getMargini()
 {
 	return obiect.getGlobalBounds();
 }
 
 void Inamici::InitInamici()
 {
-	this->obiect.setRadius(nrVf*6);//cu cat are mai multe varfuri cu atat e mai mare
-	this->obiect.setPointCount(nrVf);// cu cat mai mic nr de varfuri
-	this->obiect.setFillColor(sf::Color(rand() % 255 + 1, rand() % 255 + 1, rand() % 255 + 1,255));// parametrii sunt urmatorii: Nuanta de rosu de la 0 la 255, nuanta de verde de la 0 la 255,
-																									//nuanta de albastru de la 0 la 255,opacitatea 255= maxima
+	this->obiect.setRadius(nrVf*6);
+	this->obiect.setPointCount(nrVf);
+	this->obiect.setFillColor(sf::Color(rand() % 255 + 1, rand() % 255 + 1, rand() % 255 + 1,255));// parametrii sunt urmatorii: Nuanta de rosu de la 0 la 255, nuanta de verde de la 0 la 255, nuanta de albastru de la 0 la 255,opacitatea 255= maxima
 }
 
 void Inamici::UpdateInamici()
@@ -35,7 +34,7 @@ void Inamici::InitVariabile()
 	viteza = (float)nrVf;//cu cat avem mai multe varfuri si marime ridicata cu atat scade viteza
 	tip = 0;
 	hpMax = nrVf;//scaleaza in functie de nr de vf
-	hp = hpMax;//un inamic se spawneaza cu hp max
+	hp = hpMax;//spawnam pawn-ul cu hpMax
 	dmg = nrVf;//scaleaza in functie de nr de vf
 	valoare = nrVf;//scaleaza in functie de nr de vf;
 }
