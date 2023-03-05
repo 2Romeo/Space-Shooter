@@ -11,7 +11,10 @@ Proiectil::Proiectil(sf::Texture* txtura, float pozX, float pozY, float _X, floa
 	this->viteza = viteza;
 }
 
-
+Proiectil::~Proiectil()
+{
+//	delete textura;
+}
 
 void Proiectil::deseneazaProiectil(sf::RenderTarget* fereastra)
 {

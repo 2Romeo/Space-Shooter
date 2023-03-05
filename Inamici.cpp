@@ -26,15 +26,13 @@ void Inamici::InitInamici()
 
 void Inamici::UpdateInamici()
 {
-	this->obiect.move(0.f, 5.f);
+	this->obiect.move(0.f, 5.f); 
 }
 
 void Inamici::InitVariabile()
 {
-	hpMax = 50;
-	hp = hpMax;//spawnam jucatorul cu hpMaxim
-	nrVf = rand() % 8 + 3; //valoare nr. varfurilor va fi intre 0+3 si 7+3
-	viteza = (float)nrVf;//scaleaza in functie de nr de vf: scade viteza 
+	nrVf = rand() % 8 + 3; //valoare maxima va fi intre 0+3 si 7+3;
+	viteza = (float)nrVf;//cu cat avem mai multe varfuri si marime ridicata cu atat scade viteza
 	tip = 0;
 	hpMax = nrVf;//scaleaza in functie de nr de vf
 	hp = hpMax;//un inamic se spawneaza cu hp max

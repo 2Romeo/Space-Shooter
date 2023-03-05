@@ -4,8 +4,8 @@
 
 
 
-void SpaceShooter::DeseneazaFrame()
-{	this->getFereastra()->clear();
+void SpaceShooter::DeseneazaFrame()// deseneaza ceilalti actori, Background etc.
+{	this->getFereastra()->clear();//curata frame-ul anterior
 	this->deseneazaSpatiu();
 	this->deseneazaGUI();
 	for (auto* bullet : this->gloante)
@@ -24,19 +24,20 @@ void SpaceShooter::DeseneazaFrame()
 
 SpaceShooter::SpaceShooter()
 {
-	this->initSistem();
-	this->initSpatiu();
-	this->InitTexturi();
-	this->initActori();
 	this->InitFereastra();
-	this->initInamic();
+	this->InitTexturi();
 	this->initGUI();
+	this->initSpatiu();
+	this->initActori();
+	this->initInamic();
+	this->initSistem();
+	DeseneazaFrame();
 };
 
 SpaceShooter::~SpaceShooter()
 {
 	for (auto i : this->texturi)
-		delete i.second;//stergem doar textura
+		delete i.second;//stergem elementul sf:wad*
 
 	for (auto *i : this->gloante)
 		delete i;
@@ -51,7 +52,7 @@ SpaceShooter::~SpaceShooter()
 
 void SpaceShooter::InitTexturi()
 {
-	this->texturi["Bullet"] = new sf::Texture();
+	this->texturi["Bullet"] = new sf::Texture();//adaugam in map o inregistrare de tip <"Bullet",new Texture()>
 	this->texturi["Bullet"]->loadFromFile("Texturi/proiectil.png");
 }
 
@@ -68,12 +69,17 @@ void SpaceShooter::initInamic()
 
 void SpaceShooter::updateCombat()
 {
-	
+	//this->SpawnTimer += 1.f;
+	//if (this->SpawnTimer >= MaxSpawnTimer)//daca timpul maxim de asteptare a fost atins
+	//{
+	//	inamici.push_back(new Inamici(rand()%fereastra->getSize().x, -100.f));//face, ramd()%500 pentru ca rand() e un nr foarte mare si avem nevoie de unul mai mic
+	//	SpawnTimer = 0.f;//cronometrul de spawnare ajunge la 0 adica spawnam alt inamic
+	//}
 	for (int i = 0; i < inamici.size(); i++)
 
 	{
 		bool inamic_sters = false;
-		//miscam sprite-ul
+		//inamici[i]->UpdateInamici();//miscam sprite-ul
 
 		for (int j = 0; j < gloante.size() && inamic_sters == false; j++) // daca inamicul nu a fost sters cautam alte proiectile cu care s-a intersectat, altfel trecem la alt inamic si nu mai continuam for-ul
 
@@ -82,12 +88,17 @@ void SpaceShooter::updateCombat()
 				Puncte += inamici[i]->getValoare();
 				delete inamici[i];
 				delete gloante[j];
-				gloante.erase(gloante.begin() + j);
-				inamici.erase(inamici.begin() + i);
+				gloante.erase(gloante.begin() + j);//stergem proiectilul din vectorul de gloante
+				inamici.erase(inamici.begin() + i);//sterge inamicul din vectorul de inamici
 				inamic_sters = true;
 			}
 	}
-		
+		//remove enemy at the bottom of the screen
+		//if (inamic_sters == false && this->inamici[i]->getMargini().top > fereastra->getSize().y)//daca inamicul nnu a fost deja sters si daca latura de sus a inamicului este mai mare adica ma jos de fereastra noastra, comparat pe axa orizontala y
+		//{
+		//	inamici.erase(inamici.begin() + i);//stergem inamicul care iese din "sonar"
+		//	std::cout << inamici.size();
+		//}
 
 
 	
@@ -98,8 +109,8 @@ void SpaceShooter::updateInamici()
 	this->SpawnTimer += 1.f;
 	if (this->SpawnTimer >= MaxSpawnTimer)//daca timpul maxim de asteptare a fost atins
 	{
-		inamici.push_back(new Inamici(rand() % fereastra->getSize().x, -100.f));
-		SpawnTimer = 0.f;// spawnam alt inamic
+		inamici.push_back(new Inamici(rand() % fereastra->getSize().x, -100.f));//face, ramd()%500 pentru ca rand() e un nr foarte mare si avem nevoie de unul mai mic
+		SpawnTimer = 0.f;//cronometrul de spawnare ajunge la 0 adica spawnam alt inamic
 	}
 
 	//updatam
@@ -156,16 +167,17 @@ void SpaceShooter::deseneazaGUI()
 void SpaceShooter::updateColision()
 {	//coliziunea din partea stanga: jucatorul nu poate iesi prin partea stanga a consolei
 	if (jucator->getMargini().left < 0.f)
-		jucator->setPozitie(0.f, jucator->getMargini().top);
+		jucator->setPozitie(0.f, jucator->getMargini().top);//il punem la loc pe axa X la coordonatat 0 adica fix marginea din stanga a consolei
 
 	//coliziunea din partea de sus a consolei
 	if (jucator->getMargini().top < 0.f)
 		jucator->setPozitie( jucator->getMargini().left,0.f);
 
 	//coliziunea din partea dreapta
-	if (jucator->getMargini().left + jucator->getMargini().width >= fereastra->getSize().x) 
-		jucator->setPozitie(fereastra->getSize().x-jucator->getMargini().width, jucator->getMargini().top);
-		
+	if (jucator->getMargini().left + jucator->getMargini().width >= fereastra->getSize().x) //marginea din stanga a jucatorului + latimea jucatorului = marginea din dreapta
+		jucator->setPozitie(fereastra->getSize().x-jucator->getMargini().width, jucator->getMargini().top);//marginea din dreapta a ferestrei - latimea obiectului = marginea din dreapta suprapusa cu marginea din dreapta a ferestre,
+		//daca nu scadeam latimea obiectului ramaneam cu marginea din stanga suprapusa cu marginea ferestrei si obiectul putea sa iasa din fereastra
+	
 	//coliziunea din partea de jos
 	if (jucator->getMargini().top + jucator->getMargini().height >= fereastra->getSize().y) //marginea din stanga a jucatorului + latimea jucatorului = marginea din dreapta
 		jucator->setPozitie(jucator->getMargini().left,fereastra->getSize().y - jucator->getMargini().height);//marginea din dreapta a ferestrei - latimea obiectului = marginea din dreapta suprapusa cu marginea din dreapta a ferestre,
@@ -185,6 +197,10 @@ void SpaceShooter::initSpatiu()
 		SpatiuBackground.setTexture(TexturaBackground);
 }
 
+void SpaceShooter::updateSpatiu()
+{
+}
+
 void SpaceShooter::deseneazaSpatiu()
 {
 	this->fereastra->draw(SpatiuBackground);
@@ -197,7 +213,7 @@ void SpaceShooter::ruleaza()
 	{   EventsUpdate();
 		if(jucator->getHp()>0)
 			UpdateGeneral();
-		this->DeseneazaFrame();
+		this->DeseneazaFrame();// cele doua apeluri se realizeaza standard la orice joc 
 	}
 }
 
@@ -276,19 +292,22 @@ void SpaceShooter::InputUpdate()
 void SpaceShooter::InitFereastra()
 {
 	fereastra = new sf::RenderWindow(sf::VideoMode(800, 600), "Space Shooter", sf::Style::Close | sf::Style::Titlebar);
+	//																					^          ^         ^
+	//							        												|          |         |
+	//							  ce butoane apar la fereastra noastra de joc: buton de inchidere si buton de titlu jocului
 	fereastra->setFramerateLimit(120);//framerate dependent
 	fereastra->setVerticalSyncEnabled(0);//nu ne place V-Sync
 }
 
 void SpaceShooter::EventsUpdate()
 {
-	sf::Event x;
+	sf::Event x;//orice eveniment ce se intampal cu fereastra de ex: inchidere fereastra, miscare mouse
 	while (this->fereastra->pollEvent(x));//metoda pollEvent returneaza evenimentul din varful stivei de evenimente,daca exista, si il salveaza in variabila sf::event data ca parametru
 	//verificam ce eveniment am salvat in variabila
 	{
-		if (x.type == sf::Event::Closed)
-			fereastra->close();
-		if (x.KeyPressed != 0 && x.Event::key.code == sf::Keyboard::Escape)
+		if (x.type == sf::Event::Closed)//verificam daca evenimentul a fost inchiderea ferestrei, impropriu spus, deoarece evenimentul se refera doar la apasarea butonului de inchidere
+			fereastra->close();//implementam inchiderea reala a ferestrei
+		if (x.KeyPressed != 0 && x.Event::key.code == sf::Keyboard::Escape)//daca evenimentul este de apasare a butonului si butonul apasat este ESC
 			fereastra->close();
 	}
 }

@@ -54,6 +54,7 @@ Jucator::Jucator()
 	InitVariabile();
 	initTextura();
 	initObiect();
+	obiect.setPosition(400.f, 300.f);
 }
 
 void Jucator::setHp(int aux)
@@ -70,7 +71,11 @@ Jucator::~Jucator()
 
 void Jucator::pierdeHp(int dmg)
 {
-	
+	/*if (hp - dmg < 0)
+		hp = dmg;
+	else
+		hp -= dmg;*/
+
 	hp -= dmg;
 	if (this->hp < 0)
 		hp = 0;
@@ -89,16 +94,19 @@ bool Jucator::PoateTrage()
 void Jucator::UpdateCooldown()
 {
 	if (ClickCooldown < ClickCooldownMax)//daca am asteptat sub sau egal timpul de asteptare creste
-		ClickCooldown += 0.3f;
+		ClickCooldown += 0.3f;//la fiecare click val cooldown se mareste cu 0.3 si cand ajunge la valMax se face din nou 0
 }
+
 void Jucator::updateJucator()
 {
 	UpdateCooldown();
 }
+
 const sf::FloatRect& Jucator::getMargini()
 {
 	return obiect.getGlobalBounds();
 }
+
 void Jucator::deseneazaJucator(sf::RenderTarget& x)
 {
 	x.draw(this->obiect);
