@@ -26,7 +26,7 @@ const sf::FloatRect Proiectil::getMargini()
 	return obiect.getGlobalBounds();
 }
 void Proiectil::updateProiectil()
-{	//miscarea proiectilului
+{
 	this->obiect.move(viteza * directie);
 
 }
