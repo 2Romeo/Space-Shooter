@@ -2,7 +2,7 @@
 #include "SpaceShooter.h"
 #include <string>
 #include <sstream>
-#include <time.h>//pentru functia de randomizare
+#include <time.h>
 int main()
 {
    
